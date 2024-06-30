@@ -117,6 +117,7 @@ public class ChatRightsEditActivity extends BaseFragment {
     private TLRPC.TL_chatAdminRights myAdminRights;
     private TLRPC.TL_chatBannedRights bannedRights;
     private TLRPC.TL_chatBannedRights defaultBannedRights;
+    public boolean banning;
     private String currentBannedRights = "";
     private String currentRank;
     private String initialRank;
@@ -577,9 +578,9 @@ public class ChatRightsEditActivity extends BaseFragment {
                 sendMediaExpanded = !sendMediaExpanded;
                 updateRows(false);
                 if (sendMediaExpanded) {
-                    listViewAdapter.notifyItemRangeInserted(sendMediaRow + 1, 9);
+                    listViewAdapter.notifyItemRangeInserted(sendMediaRow + 1, 12);
                 } else {
-                    listViewAdapter.notifyItemRangeRemoved(sendMediaRow + 1, 9);
+                    listViewAdapter.notifyItemRangeRemoved(sendMediaRow + 1, 12);
                 }
                 return;
             } else if (position == channelMessagesRow) {
@@ -616,6 +617,7 @@ public class ChatRightsEditActivity extends BaseFragment {
                     }
                     finishFragment();
                 } else if (currentType == TYPE_BANNED) {
+                    banning = true;
                     bannedRights = new TLRPC.TL_chatBannedRights();
                     bannedRights.view_messages = true;
                     bannedRights.send_media = true;
@@ -1693,7 +1695,7 @@ public class ChatRightsEditActivity extends BaseFragment {
                     addBotButtonContainer.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundGray));
                     addBotButton = new FrameLayout(mContext);
                     addBotButtonText = new AnimatedTextView(mContext, true, false, false);
-                    addBotButtonText.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
+                    addBotButtonText.setTypeface(AndroidUtilities.bold());
                     addBotButtonText.setTextColor(0xffffffff);
                     addBotButtonText.setTextSize(AndroidUtilities.dp(14));
                     addBotButtonText.setGravity(Gravity.CENTER);
@@ -2107,6 +2109,9 @@ public class ChatRightsEditActivity extends BaseFragment {
         bannedRights.send_photos = !enabled;
         bannedRights.send_videos = !enabled;
         bannedRights.send_stickers = !enabled;
+        bannedRights.send_gifs = !enabled;
+        bannedRights.send_games = !enabled;
+        bannedRights.send_inline = !enabled;
         bannedRights.send_audios = !enabled;
         bannedRights.send_docs = !enabled;
         bannedRights.send_voices = !enabled;
@@ -2143,6 +2148,15 @@ public class ChatRightsEditActivity extends BaseFragment {
             i++;
         }
         if (!bannedRights.send_polls && !defaultBannedRights.send_polls) {
+            i++;
+        }
+        if (!bannedRights.send_gifs && !defaultBannedRights.send_gifs) {
+            i++;
+        }
+        if (!bannedRights.send_games && !defaultBannedRights.send_games) {
+            i++;
+        }
+        if (!bannedRights.send_inline && !defaultBannedRights.send_inline) {
             i++;
         }
         return i;

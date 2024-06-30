@@ -130,6 +130,7 @@
     <string name="PushServiceTypeInApp">V aplikaci</string>
     <string name="PushServiceTypeFCM">Google FCM</string>
     <string name="PushServiceTypeUnified">Sjednocený posun</string>
+    <string name="PushServiceTypeMicroG">MikroG</string>
     <string name="PushServiceTypeInAppDialog">Zobrazit rezidentní oznámení</string>
     <string name="PushServiceTypeUnifiedGateway">Sjednocená posuvná brána</string>
     <string name="SendMp4DocumentAsVideo">Poslat dokument mp4 jako video</string>
@@ -138,4 +139,23 @@
     <string name="DisableChannelMuteButton">Zakázat tlačítko ztlumit kanál</string>
     <string name="DisablePreviewVideoSoundShortcut">Zakázat zástupce zvuku videa</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Zakázat tlačítka hlasitosti pro zapnutí náhledu zvuku videa</string>
+    <string name="DisableAutoWebLogin">Zakázat automatické přihlášení k webu</string>
+    <string name="PreviewSendPhoto">Odeslat fotku</string>
+    <string name="PreviewSendVideo">Poslat video</string>
+    <string name="PreviewSendFile">Odeslat soubor</string>
+    <string name="SentryAnalytics">Zpráva o pádu aplikace</string>
+    <string name="UnblockDeleted">Odblokovat smazané uživatele</string>
+    <string name="UnblockDeletedWarn">Opravdu chcete odblokovat **všechny odstraněné uživatele**?</string>
+    <string name="RegexFilters">Filtry zpráv</string>
+    <string name="RegexFiltersHeader">Filtry</string>
+    <string name="RegexFiltersEnableInChats">Povolit v soukromých chatech</string>
+    <string name="RegexFiltersCaseInsensitive">Necitlivé výrazy na velikost písmen</string>
+    <string name="RegexFiltersAdd">Přidat filtr</string>
+    <string name="RegexFiltersEdit">Upravit filtr</string>
+    <string name="RegexFiltersAddDescription">Můžete použít web <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> a vyzkoušet váš regulární výraz.
+    Můžete také použít prostý text, ale nezapomeňte uniknout závorky.</string>
+    <string name="RegexFiltersAddError">Syntaktická chyba Regex</string>
+    <string name="ShowTimeHint">Pro zobrazení podrobností klikněte na čas zprávy</string>
+    <string name="SearchHashtagDefaultPageChannel">Výchozí vyhledávací stránka Hashtag kliknutím na kanál</string>
+    <string name="SearchHashtagDefaultPageChat">Výchozí stránka hledání kliknutím na hashtag</string>
 </resources>

@@ -157,6 +157,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell disableClickCommandToSendRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableClickCommandToSend(), LocaleController.getString(R.string.DisableClickCommandToSendHint)));
     private final AbstractConfigCell showQuickReplyInBotCommandsRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowQuickReplyInBotCommands()));
     private final AbstractConfigCell disablePreviewVideoSoundShortcutRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisablePreviewVideoSoundShortcut(), LocaleController.getString(R.string.DisablePreviewVideoSoundShortcutNotice)));
+    private final AbstractConfigCell showTimeHintRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getShowTimeHint()));
     private final AbstractConfigCell dividerInteractions = cellGroup.appendCell(new ConfigCellDivider());
 
     // Sticker
@@ -189,18 +190,16 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private final AbstractConfigCell repeatConfirmRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.repeatConfirm));
     private final AbstractConfigCell dividerConfirms = cellGroup.appendCell(new ConfigCellDivider());
 
-    // Story
-    private final AbstractConfigCell headerStory = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Story")));
-    private final AbstractConfigCell disableStoriesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableStories()));
-    private final AbstractConfigCell disableSendReadStoriesRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getDisableSendReadStories()));
-    private final AbstractConfigCell dividerStory = cellGroup.appendCell(new ConfigCellDivider());
-
-    private final AbstractConfigCell ignoreBlockedRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.ignoreBlocked, LocaleController.getString("IgnoreBlockedAbout")));
-    private final AbstractConfigCell disableChatActionRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChatAction));
-    private final AbstractConfigCell disableChoosingStickerRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableChoosingSticker));
-    private final AbstractConfigCell dividerEnd = cellGroup.appendCell(new ConfigCellDivider());
-
-
+    // search tag
+    private final AbstractConfigCell headerSearchTag = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("SavedTagSearchHint")));
+    private final String[] searchPagesString = new String[]{
+            LocaleController.getString(R.string.SearchThisChat),
+            LocaleController.getString(R.string.SearchMyMessages),
+            LocaleController.getString(R.string.SearchPublicPosts),
+    };
+    private final AbstractConfigCell searchHashtagDefaultPageChannelRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSearchHashtagDefaultPageChannel(), searchPagesString, null));
+    private final AbstractConfigCell searchHashtagDefaultPageChatRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getSearchHashtagDefaultPageChat(), searchPagesString, null));
+    private final AbstractConfigCell dividerSearchTag  = cellGroup.appendCell(new ConfigCellDivider());
 
     private ListAdapter listAdapter;
     private ActionBarMenuItem menuItem;
@@ -209,15 +208,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
     private UndoView tooltip;
 
     public NekoChatSettingsActivity() {
-        if (!NekoXConfig.isDeveloper()) {
-            cellGroup.rows.remove(disableChatActionRow);
-            cellGroup.rows.remove(disableChoosingStickerRow);
-            cellGroup.rows.remove(ignoreBlockedRow);
-            cellGroup.rows.remove(dividerEnd);
-            NekoConfig.disableChatAction.setConfigBool(false);
-            NekoConfig.disableChoosingSticker.setConfigBool(false);
-            NekoConfig.ignoreBlocked.setConfigBool(false);
-        }
         if (!NekoConfig.showRepeat.Bool() || NaConfig.INSTANCE.getShowRepeatAsCopy().Bool()){
             cellGroup.rows.remove(autoReplaceRepeatRow);
             NaConfig.INSTANCE.getAutoReplaceRepeat().setConfigBool(false);
@@ -790,7 +780,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
             TextCheckCell textCell = new TextCheckCell(context);
             switch (a) {
                 case 0: {
-                    textCell.setTextAndCheck(LocaleController.getString("DeleteBanUser", R.string.DeleteBanUser), checks[a], false);
+                    textCell.setTextAndCheck(LocaleController.getString("DeleteBanUsers", R.string.DeleteBanUsers), checks[a], false);
                     break;
                 }
                 case 1: {
@@ -939,6 +929,7 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            View view = holder.itemView;
             AbstractConfigCell a = cellGroup.rows.get(position);
             if (a != null) {
                 if (a instanceof ConfigCellCustom) {
@@ -950,6 +941,9 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                         } else if (position == cellGroup.rows.indexOf(doubleTapActionRow)) {
                             textCell.setTextAndValue(LocaleController.getString("DoubleTapAction", R.string.DoubleTapAction), DoubleTap.doubleTapActionMap.get(NaConfig.INSTANCE.getDoubleTapAction().Int()), true);
                         }
+                    } else if (view instanceof EmojiSetCell) {
+                        EmojiSetCell v1 =  (EmojiSetCell) view;
+                        v1.setData(EmojiHelper.getInstance().getCurrentEmojiPackInfo(), false, true);
                     }
                 } else {
                     // Default binds
@@ -991,7 +985,6 @@ public class NekoChatSettingsActivity extends BaseNekoXSettingsActivity implemen
                     break;
                 case ConfigCellCustom.CUSTOM_ITEM_EmojiSet:
                     view = emojiSetCell = new EmojiSetCell(mContext, false);
-                    emojiSetCell.setData(EmojiHelper.getInstance().getCurrentEmojiPackInfo(), false, true);
                     view.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
                     break;
             }

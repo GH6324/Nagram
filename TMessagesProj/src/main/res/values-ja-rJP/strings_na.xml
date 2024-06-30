@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="N_Config">N-Config</string>
+    <string name="N_Config">N-構成</string>
     <string name="ForceCopy">強制コピー</string>
     <string name="InvertReply">Invert</string>
     <string name="Great">素晴らしい</string>
@@ -130,12 +130,32 @@
     <string name="PushServiceTypeInApp">アプリ内</string>
     <string name="PushServiceTypeFCM">Google FCM</string>
     <string name="PushServiceTypeUnified">統一されたプッシュ</string>
+    <string name="PushServiceTypeMicroG">MicroG</string>
     <string name="PushServiceTypeInAppDialog">常駐通知を表示</string>
-    <string name="PushServiceTypeUnifiedGateway">Unified Push Gateway</string>
+    <string name="PushServiceTypeUnifiedGateway">統合プッシュゲートウェイ</string>
     <string name="SendMp4DocumentAsVideo">mp4ドキュメントを動画として送信</string>
     <string name="StickersChooseShortNameForStickerPack">あなたのパックの短い名前を選択してください。</string>
     <string name="StickersCopyStickerSet">ステッカーセットをコピー</string>
     <string name="DisableChannelMuteButton">チャンネルミュートボタンを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcut">プレビュービデオサウンドのショートカットを無効にする</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">ビデオのプレビューを有効にするには音量キーを無効にしてください</string>
+    <string name="DisableAutoWebLogin">自動ウェブログインを無効にする</string>
+    <string name="PreviewSendPhoto">写真を送信</string>
+    <string name="PreviewSendVideo">動画を送信</string>
+    <string name="PreviewSendFile">ファイルを送信</string>
+    <string name="SentryAnalytics">送信者のクラッシュレポート</string>
+    <string name="UnblockDeleted">削除されたユーザーのブロックを解除</string>
+    <string name="UnblockDeletedWarn">**すべて削除されたユーザー**のブロックを解除してもよろしいですか？</string>
+    <string name="RegexFilters">メッセージフィルタ</string>
+    <string name="RegexFiltersHeader">フィルタ</string>
+    <string name="RegexFiltersEnableInChats">プライベートチャットで有効にする</string>
+    <string name="RegexFiltersCaseInsensitive">大文字小文字を区別しない表現</string>
+    <string name="RegexFiltersAdd">フィルターを追加</string>
+    <string name="RegexFiltersEdit">フィルターを編集</string>
+    <string name="RegexFiltersAddDescription">You can use site <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> to fully test your regular expression.
+    You can also use plain text, but don\'t forget to escape brackets.</string>
+    <string name="RegexFiltersAddError">正規表現の構文エラー</string>
+    <string name="ShowTimeHint">詳細を表示するメッセージ時間をクリックしてください</string>
+    <string name="SearchHashtagDefaultPageChannel">Channel Click Hashtag Default Search Page</string>
+    <string name="SearchHashtagDefaultPageChat">チャットクリック ハッシュタグ デフォルト検索ページ</string>
 </resources>

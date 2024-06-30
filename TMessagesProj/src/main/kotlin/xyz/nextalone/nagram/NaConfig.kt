@@ -584,6 +584,60 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val disableAutoWebLogin =
+        addConfig(
+            "DisableAutoWebLogin",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val sentryAnalytics =
+        addConfig(
+            "SentryAnalytics",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val regexFiltersEnabled =
+        addConfig(
+            "RegexFilters",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val regexFiltersData =
+        addConfig(
+            "RegexFiltersData",
+            ConfigItem.configTypeString,
+            "[]"
+        )
+    val regexFiltersEnableInChats =
+        addConfig(
+            "RegexFiltersEnableInChats",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val showTimeHint =
+        addConfig(
+            "ShowTimeHint",
+            ConfigItem.configTypeBool,
+            true
+        )
+    val showHiddenFeature =
+        addConfig(
+            "ShowHiddenFeature",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val searchHashtagDefaultPageChannel =
+        addConfig(
+            "SearchHashtagDefaultPageChannel",
+            ConfigItem.configTypeInt,
+            0
+        )
+    val searchHashtagDefaultPageChat =
+        addConfig(
+            "SearchHashtagDefaultPageChat",
+            ConfigItem.configTypeInt,
+            0
+        )
 
     private fun addConfig(
         k: String,

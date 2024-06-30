@@ -53,6 +53,8 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import xyz.nextalone.nagram.NaConfig;
+
 public class Browser {
 
     private static WeakReference<CustomTabsSession> customTabsCurrentSession;
@@ -322,11 +324,11 @@ public class Browser {
                 }
             }
             String host = AndroidUtilities.getHostAuthority(uri.toString().toLowerCase());
-            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host)) {
+            if (AccountInstance.getInstance(currentAccount).getMessagesController().autologinDomains.contains(host) && !NaConfig.INSTANCE.getDisableAutoWebLogin().Bool()) {
                 String token = "autologin_token=" + URLEncoder.encode(AccountInstance.getInstance(UserConfig.selectedAccount).getMessagesController().autologinToken, "UTF-8");
                 String url = uri.toString();
                 int idx = url.indexOf("://");
-                String path = idx >= 0 ? url.substring(idx + 3) : url;
+                String path = idx >= 0 && idx <= 5 && !url.substring(0, idx).contains(".") ? url.substring(idx + 3) : url;
                 String fragment = uri.getEncodedFragment();
                 String finalPath = fragment == null ? path : path.substring(0, path.indexOf("#" + fragment));
                 if (finalPath.indexOf('?') >= 0) {

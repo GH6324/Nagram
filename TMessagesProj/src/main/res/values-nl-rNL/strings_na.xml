@@ -130,6 +130,7 @@
     <string name="PushServiceTypeInApp">In de App</string>
     <string name="PushServiceTypeFCM">Google FCM</string>
     <string name="PushServiceTypeUnified">Gecombineerde Push</string>
+    <string name="PushServiceTypeMicroG">MicroG</string>
     <string name="PushServiceTypeInAppDialog">Toon inactieve meldingen</string>
     <string name="PushServiceTypeUnifiedGateway">Gecombineerde Push Gateway</string>
     <string name="SendMp4DocumentAsVideo">Stuur mp4-document als video</string>
@@ -138,4 +139,23 @@
     <string name="DisableChannelMuteButton">Kanaaldemping knop uitschakelen</string>
     <string name="DisablePreviewVideoSoundShortcut">Snelkoppeling voor preview video uitschakelen</string>
     <string name="DisablePreviewVideoSoundShortcutNotice">Volumeknoppen uitschakelen om preview videogeluid in te schakelen</string>
+    <string name="DisableAutoWebLogin">Automatisch web inloggen uitschakelen</string>
+    <string name="PreviewSendPhoto">Foto verzenden</string>
+    <string name="PreviewSendVideo">Video verzenden</string>
+    <string name="PreviewSendFile">Bestand verzenden</string>
+    <string name="SentryAnalytics">Sentry Crash Rapport</string>
+    <string name="UnblockDeleted">Deblokkeer verwijderde gebruikers</string>
+    <string name="UnblockDeletedWarn">Weet u zeker dat u **verwijderde gebruikers** wilt deblokkeren?</string>
+    <string name="RegexFilters">Bericht Filters</string>
+    <string name="RegexFiltersHeader">Filters</string>
+    <string name="RegexFiltersEnableInChats">Inschakelen in privéchats</string>
+    <string name="RegexFiltersCaseInsensitive">Zaak ongevoelige uitdrukkingen</string>
+    <string name="RegexFiltersAdd">Filter toevoegen</string>
+    <string name="RegexFiltersEdit">Filter bewerken</string>
+    <string name="RegexFiltersAddDescription">Je kunt de website <![CDATA[<a href="https://regex101.com">regex101.com</a>]]> gebruiken om je reguliere expressie volledig te testen.
+    Je kunt ook platte tekst gebruiken, maar vergeet niet om uit haakjes te ontsnappen.</string>
+    <string name="RegexFiltersAddError">Regex syntaxisfout</string>
+    <string name="ShowTimeHint">Klik op berichttijd om details weer te geven</string>
+    <string name="SearchHashtagDefaultPageChannel">Kanaal klik op Hashtag standaard zoekpagina</string>
+    <string name="SearchHashtagDefaultPageChat">Chat klik op Hashtag standaard zoekpagina</string>
 </resources>
