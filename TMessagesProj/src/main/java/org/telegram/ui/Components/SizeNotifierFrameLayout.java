@@ -75,6 +75,7 @@ public class SizeNotifierFrameLayout extends FrameLayout {
     protected int keyboardHeight;
     private int bottomClip;
     protected SizeNotifierFrameLayoutDelegate delegate;
+    protected final ArrayList<SizeNotifierFrameLayoutDelegate> delegates = new ArrayList<>();
     private boolean occupyStatusBar = true;
     private WallpaperParallaxEffect parallaxEffect;
     private float translationX;
@@ -223,8 +224,8 @@ public class SizeNotifierFrameLayout extends FrameLayout {
                 if (drawable instanceof MotionBackgroundDrawable) {
                     MotionBackgroundDrawable motionBackgroundDrawable = (MotionBackgroundDrawable) drawable;
                     if (motionBackgroundDrawable.hasPattern()) {
-                        int actionBarHeight = (isActionBarVisible() ? ActionBar.getCurrentActionBarHeight() : 0) + (Build.VERSION.SDK_INT >= 21 && occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
-                        int viewHeight = getRootView().getMeasuredHeight() - actionBarHeight;
+                        int actionBarHeight = (isActionBarVisible() ? ActionBar.getCurrentActionBarHeight() : 0) + (isStatusBarVisible() && Build.VERSION.SDK_INT >= 21 && occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
+                        int viewHeight = useRootView() ? getRootView().getMeasuredHeight() - actionBarHeight : getHeight();
                         float scaleX = (float) getMeasuredWidth() / (float) drawable.getIntrinsicWidth();
                         float scaleY = (float) (viewHeight) / (float) drawable.getIntrinsicHeight();
                         float scale = Math.max(scaleX, scaleY);
@@ -289,8 +290,8 @@ public class SizeNotifierFrameLayout extends FrameLayout {
                         checkSnowflake(canvas);
                         canvas.restore();
                     } else {
-                        int actionBarHeight = (isActionBarVisible() ? ActionBar.getCurrentActionBarHeight() : 0) + (Build.VERSION.SDK_INT >= 21 && occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
-                        int viewHeight = getRootView().getMeasuredHeight() - actionBarHeight;
+                        int actionBarHeight = (isActionBarVisible() ? ActionBar.getCurrentActionBarHeight() : 0) + (isStatusBarVisible() && Build.VERSION.SDK_INT >= 21 && occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
+                        int viewHeight = useRootView() ? getRootView().getMeasuredHeight() - actionBarHeight : getHeight();
                         float scaleX = (float) getMeasuredWidth() / (float) drawable.getIntrinsicWidth();
                         float scaleY = (float) (viewHeight) / (float) drawable.getIntrinsicHeight();
                         float scale = Math.max(scaleX, scaleY);
@@ -412,6 +413,13 @@ public class SizeNotifierFrameLayout extends FrameLayout {
     public void setDelegate(SizeNotifierFrameLayoutDelegate delegate) {
         this.delegate = delegate;
     }
+    public void addDelegate(SizeNotifierFrameLayoutDelegate delegate) {
+        this.delegates.add(delegate);
+    }
+    public void removeDelegate(SizeNotifierFrameLayoutDelegate delegate) {
+        this.delegates.remove(delegate);
+    }
+
 
     public void setOccupyStatusBar(boolean value) {
         occupyStatusBar = value;
@@ -455,12 +463,15 @@ public class SizeNotifierFrameLayout extends FrameLayout {
         if (parallaxEffect != null) {
             parallaxScale = parallaxEffect.getScale(getMeasuredWidth(), getMeasuredHeight());
         }
-        if (delegate != null) {
+        if (delegate != null || !delegates.isEmpty()) {
             keyboardHeight = measureKeyboardHeight();
             final boolean isWidthGreater = AndroidUtilities.displaySize.x > AndroidUtilities.displaySize.y;
             post(() -> {
                 if (delegate != null) {
                     delegate.onSizeChanged(keyboardHeight, isWidthGreater);
+                }
+                for (int i = 0; i < delegates.size(); ++i) {
+                    delegates.get(i).onSizeChanged(keyboardHeight, isWidthGreater);
                 }
             });
         }
@@ -551,7 +562,15 @@ public class SizeNotifierFrameLayout extends FrameLayout {
         }
     }
 
+    protected boolean useRootView() {
+        return true;
+    }
+
     protected boolean isActionBarVisible() {
+        return true;
+    }
+
+    protected boolean isStatusBarVisible() {
         return true;
     }
 

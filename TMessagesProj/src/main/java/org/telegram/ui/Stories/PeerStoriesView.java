@@ -131,6 +131,7 @@ import org.telegram.ui.Components.CustomPopupMenu;
 import org.telegram.ui.Components.DotDividerSpan;
 import org.telegram.ui.Components.EditTextCaption;
 import org.telegram.ui.Components.EmojiPacksAlert;
+import org.telegram.ui.Components.HashtagActivity;
 import org.telegram.ui.Components.HintView;
 import org.telegram.ui.Components.InstantCameraView;
 import org.telegram.ui.Components.LayoutHelper;
@@ -167,6 +168,7 @@ import org.telegram.ui.NotificationsCustomSettingsActivity;
 import org.telegram.ui.PinchToZoomHelper;
 import org.telegram.ui.PremiumPreviewFragment;
 import org.telegram.ui.ProfileActivity;
+import org.telegram.ui.ReportBottomSheet;
 import org.telegram.ui.Stories.recorder.ButtonWithCounterView;
 import org.telegram.ui.Stories.recorder.CaptionContainerView;
 import org.telegram.ui.Stories.recorder.HintView2;
@@ -832,11 +834,17 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                 } else if (span instanceof URLSpanNoUnderline) {
                     String str = ((URLSpanNoUnderline) span).getURL();
                     if (str != null && (str.startsWith("#") || str.startsWith("$"))) {
-                        Bundle args = new Bundle();
-                        args.putInt("type", MediaActivity.TYPE_STORIES_SEARCH);
-                        args.putString("hashtag", str);
-                        if (storyViewer != null) {
-                            storyViewer.presentFragment(new MediaActivity(args, null));
+                        if (str.contains("@")) {
+                            if (storyViewer != null) {
+                                storyViewer.presentFragment(new HashtagActivity(str));
+                            }
+                        } else {
+                            Bundle args = new Bundle();
+                            args.putInt("type", MediaActivity.TYPE_STORIES_SEARCH);
+                            args.putString("hashtag", str);
+                            if (storyViewer != null) {
+                                storyViewer.presentFragment(new MediaActivity(args, null));
+                            }
                         }
                     } else {
                         String username = Browser.extractUsername(str);
@@ -1766,7 +1774,10 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                         if (!unsupported) {
                             if (!UserObject.isService(dialogId) && !isBotsPreview()) {
                                 ActionBarMenuItem.addItem(popupLayout, R.drawable.msg_report, LocaleController.getString(R.string.ReportChat), false, resourcesProvider).setOnClickListener(v -> {
-                                    AlertsCreator.createReportAlert(getContext(), dialogId, 0, currentStory.storyItem.id, storyViewer.fragment, resourcesProvider, null);
+                                    if (storyViewer != null) storyViewer.setOverlayVisible(true);
+                                    ReportBottomSheet.openStory(currentAccount, getContext(), currentStory.storyItem, BulletinFactory.of(storyContainer, resourcesProvider), resourcesProvider, status -> {
+                                        if (storyViewer != null) storyViewer.setOverlayVisible(false);
+                                    });
                                     if (popupMenu != null) {
                                         popupMenu.dismiss();
                                     }
@@ -2690,7 +2701,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                 }
                 if (mentionContainer.getAdapter() != null) {
                     mentionContainer.setDialogId(dialogId);
-                    mentionContainer.getAdapter().setUserOrChat(MessagesController.getInstance(currentAccount).getUser(dialogId), null);
+                    mentionContainer.getAdapter().setUserOrChat(MessagesController.getInstance(currentAccount).getUser(dialogId), MessagesController.getInstance(currentAccount).getChat(-dialogId));
                     mentionContainer.getAdapter().searchUsernameOrHashtag(text, chatActivityEnterView.getCursorPosition(), null, false, false);
                 }
                 invalidate();
@@ -2873,6 +2884,10 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                     canvas.drawRect(0, getMeasuredHeight(), getMeasuredWidth(), getMeasuredHeight() - 1, resourcesProvider.getPaint(Theme.key_paint_divider));
                 }
             }
+            @Override
+            protected boolean isStories() {
+                return true;
+            }
         };
         mentionContainer.withDelegate(new MentionsContainerView.Delegate() {
             @Override
@@ -2976,7 +2991,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
         chatAttachAlert.setMaxSelectedPhotos(-1, true);
         chatAttachAlert.setDialogId(dialogId);
         chatAttachAlert.init();
-        chatAttachAlert.getCommentTextView().setText(chatActivityEnterView.getFieldText());
+        chatAttachAlert.getCommentView().setText(chatActivityEnterView.getFieldText());
         delegate.showDialog(chatAttachAlert);
     }
 
@@ -3120,7 +3135,7 @@ public class PeerStoriesView extends SizeNotifierFrameLayout implements Notifica
                     }
                 }
             });
-            chatAttachAlert.getCommentTextView().setText(chatActivityEnterView.getFieldText());
+            chatAttachAlert.getCommentView().setText(chatActivityEnterView.getFieldText());
         }
     }
 

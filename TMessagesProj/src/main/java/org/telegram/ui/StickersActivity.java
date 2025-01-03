@@ -419,9 +419,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         shareMenuItem = actionMode.addItemWithWidth(MENU_SHARE, R.drawable.msg_share, AndroidUtilities.dp(54));
         exportMenuItem = actionMode.addItemWithWidth(MENU_EXPORT, R.drawable.msg_download, AndroidUtilities.dp(54));
-        if (currentType != MediaDataController.TYPE_EMOJIPACKS) {
-            archiveMenuItem = actionMode.addItemWithWidth(MENU_ARCHIVE, R.drawable.msg_archive, AndroidUtilities.dp(54));
-        }
+        archiveMenuItem = actionMode.addItemWithWidth(MENU_ARCHIVE, R.drawable.msg_archive, AndroidUtilities.dp(54));
         deleteMenuItem = actionMode.addItemWithWidth(MENU_DELETE, R.drawable.msg_delete, AndroidUtilities.dp(54));
 
         ArrayList<TLRPC.TL_messages_stickerSet> sets;
@@ -488,7 +486,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                     inputStickerSets.add(inputStickerSetID);
                     showDialog(new EmojiPacksAlert(StickersActivity.this, getParentActivity(), getResourceProvider(), inputStickerSets));
                 } else {
-                    showDialog(new StickersAlert(getParentActivity(), StickersActivity.this, inputStickerSetID, null, null));
+                    showDialog(new StickersAlert(getParentActivity(), StickersActivity.this, inputStickerSetID, null, null, false));
                 }
             } else if (position == featuredStickersShowMoreRow || position == featuredRow) {
                 if (currentType == MediaDataController.TYPE_EMOJIPACKS) {
@@ -537,7 +535,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
                         inputs.add(inputId);
                         showDialog(new EmojiPacksAlert(StickersActivity.this, getParentActivity(), getResourceProvider(), inputs));
                     } else {
-                        showDialog(new StickersAlert(getParentActivity(), StickersActivity.this, null, stickerSet, null));
+                        showDialog(new StickersAlert(getParentActivity(), StickersActivity.this, null, stickerSet, null, false));
                     }
                 } else {
                     listAdapter.toggleSelected(position);
@@ -923,7 +921,7 @@ public class StickersActivity extends BaseFragment implements NotificationCenter
 
         if (currentType == MediaDataController.TYPE_IMAGE) {
             featuredRow = rowCount++;
-            masksRow = -1;
+            masksRow = rowCount++;
             if (mediaDataController.getArchivedStickersCount(currentType) != 0) {
                 boolean inserted = archivedRow == -1;
                 archivedRow = rowCount++;

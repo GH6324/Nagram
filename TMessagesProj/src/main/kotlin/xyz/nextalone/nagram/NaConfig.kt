@@ -652,6 +652,30 @@ object NaConfig {
             ConfigItem.configTypeBool,
             false
         )
+    val defaultHlsVideoQuality =
+        addConfig(
+            "DefaultHlsVideoQuality",
+            ConfigItem.configTypeInt,
+            0
+        )
+    val disableBotOpenButton =
+        addConfig(
+            "DisableBotOpenButton",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val customTitleUserName =
+        addConfig(
+            "CustomTitleUserName",
+            ConfigItem.configTypeBool,
+            false
+        )
+    val enhancedVideoBitrate =
+        addConfig(
+            "EnhancedVideoBitrate",
+            ConfigItem.configTypeBool,
+            false
+        )
 
     private fun addConfig(
         k: String,

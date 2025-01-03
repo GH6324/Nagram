@@ -133,6 +133,15 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 //    private final AbstractConfigCell customPublicProxyIPRow = cellGroup.appendCell(new ConfigCellTextDetail(NekoConfig.customPublicProxyIP, (view, position) -> {
 //        customDialog_BottomInputString(position, NekoConfig.customPublicProxyIP, LocaleController.getString("customPublicProxyIPNotice"), "IP");
 //    }, LocaleController.getString("UsernameEmpty", R.string.UsernameEmpty)));
+private final AbstractConfigCell defaultHlsVideoQualityRow = cellGroup.appendCell(new ConfigCellSelectBox(null, NaConfig.INSTANCE.getDefaultHlsVideoQuality(),
+        new String[]{
+                LocaleController.getString(R.string.QualityAuto),
+                LocaleController.getString(R.string.QualityOriginal),
+                LocaleController.getString(R.string.Quality1440),
+                LocaleController.getString(R.string.Quality1080),
+                LocaleController.getString(R.string.Quality720),
+                LocaleController.getString(R.string.Quality144),
+        }, null));
     private final AbstractConfigCell dividerConnection = cellGroup.appendCell(new ConfigCellDivider());
 
     private final AbstractConfigCell headerFolder = cellGroup.appendCell(new ConfigCellHeader(LocaleController.getString("Folder")));
@@ -224,6 +233,7 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
     private final AbstractConfigCell customSavePathRow = cellGroup.appendCell(new ConfigCellTextInput(null, NekoConfig.customSavePath,
             LocaleController.getString("customSavePathHint", R.string.customSavePathHint), null,
             (input) -> input.matches("^[A-za-z0-9.]{1,255}$") || input.isEmpty() ? input : (String) NekoConfig.customSavePath.defaultValue));
+    private final AbstractConfigCell customTitleUserNameRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getCustomTitleUserName()));
     private final AbstractConfigCell useSystemUnlockRow = cellGroup.appendCell(new ConfigCellTextCheck(NaConfig.INSTANCE.getUseSystemUnlock()));
     private final AbstractConfigCell disableUndoRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.disableUndo));
     private final AbstractConfigCell showIdAndDcRow = cellGroup.appendCell(new ConfigCellTextCheck(NekoConfig.showIdAndDc));
@@ -493,6 +503,11 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
             } else if (key.equals(NaConfig.INSTANCE.getPushServiceTypeUnifiedGateway().getKey())) {
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             } else if (key.equals(NaConfig.INSTANCE.getSentryAnalytics().getKey())) {
+                restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
+            } else if (key.equals(NaConfig.INSTANCE.getCustomTitleUserName().getKey())) {
+                boolean enabled = (Boolean) newValue;
+                ((ConfigCellTextInput) customTitleRow).setEnabled(!enabled);
+                listAdapter.notifyItemChanged(cellGroup.rows.indexOf(customTitleRow));
                 restartTooltip.showWithAction(0, UndoView.ACTION_NEED_RESATRT, null, null);
             }
         };
@@ -881,6 +896,9 @@ public class NekoGeneralSettingsActivity extends BaseNekoXSettingsActivity {
 
         if (NekoConfig.useOSMDroidMap.Bool())
             ((ConfigCellTextCheck) mapDriftingFixForGoogleMapsRow).setEnabled(false);
+
+        if (NaConfig.INSTANCE.getCustomTitleUserName().Bool())
+            ((ConfigCellTextInput) customTitleRow).setEnabled(false);
 
         if (NekoConfig.useTelegramTranslateInChat.Bool())
             ((ConfigCellCustom) translationProviderRow).setEnabled(false);

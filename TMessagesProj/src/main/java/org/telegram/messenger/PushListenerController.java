@@ -505,6 +505,12 @@ public class PushListenerController {
                                             message1 = args[1];
                                             break;
                                         }
+                                        case "MESSAGE_STARGIFT": {
+                                            userName = args[0];
+                                            messageText = LocaleController.formatPluralStringComma("NotificationMessageStarGift", Integer.parseInt(args[1]), args[0]);
+                                            message1 = LocaleController.formatPluralStringComma("Gift2Notification", Integer.parseInt(args[1]));
+                                            break;
+                                        }
                                         case "MESSAGE_PAID_MEDIA": {
                                             int stars = Integer.parseInt(args[1]);
                                             messageText = LocaleController.formatPluralString("NotificationMessagePaidMedia", stars, args[0]);

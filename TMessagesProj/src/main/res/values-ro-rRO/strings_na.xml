@@ -165,4 +165,8 @@
     <string name="PanguInfo">Spațiere de text paranoică pentru o bună lizibilitate, pentru a insera automat spațiul alb între caracterele CJK (chineză, japoneză, coreană), engleză pe jumătate de lățime, cifră și simboluri.</string>
     <string name="SendWithPangu">Trimite cu Pangu</string>
     <string name="SendWithoutPangu">Trimite fără Pangu</string>
+    <string name="DefaultHlsVideoQuality">Calitate video implicită Hls</string>
+    <string name="DisableBotOpenButton">Dezactivează butonul de deschidere a bot-ului</string>
+    <string name="CustomTitleUserName">Folosește porecla utilizatorului ca titlu</string>
+    <string name="EnhancedVideoBitrate">Rată de biți video partajată îmbunătățită</string>
 </resources>

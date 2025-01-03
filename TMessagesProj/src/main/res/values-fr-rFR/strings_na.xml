@@ -165,4 +165,8 @@
     <string name="PanguInfo">Espacement de texte paranoïaque pour une bonne lisibilité, pour insérer automatiquement des espaces entre les caractères CJK (chinois, japonais, coréen), demi-largeur anglais, chiffres et symboles.</string>
     <string name="SendWithPangu">Envoyer avec Pangu</string>
     <string name="SendWithoutPangu">Envoyer sans Pangu</string>
+    <string name="DefaultHlsVideoQuality">Qualité vidéo Hls par défaut</string>
+    <string name="DisableBotOpenButton">Désactiver le bouton d\'ouverture du bot</string>
+    <string name="CustomTitleUserName">Utiliser le pseudo de l\'utilisateur comme titre</string>
+    <string name="EnhancedVideoBitrate">Débit vidéo partagé amélioré</string>
 </resources>
