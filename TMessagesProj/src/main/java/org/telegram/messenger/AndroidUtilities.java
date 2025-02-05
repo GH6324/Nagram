@@ -219,6 +219,7 @@ import java.util.regex.Pattern;
 import tw.nekomimi.nekogram.NekoConfig;
 import tw.nekomimi.nekogram.utils.EnvUtil;
 import tw.nekomimi.nekogram.utils.FileUtil;
+import tw.nekomimi.nekogram.utils.TelegramUtil;
 
 public class AndroidUtilities {
     public final static int LIGHT_STATUS_BAR_OVERLAY = 0x0f000000, DARK_STATUS_BAR_OVERLAY = 0x33000000;
@@ -504,6 +505,17 @@ public class AndroidUtilities {
         return spannableStringBuilder;
     }
 
+    public static Activity getActivity() {
+        return getActivity(null);
+    }
+
+    public static Activity getActivity(Context context) {
+        Activity activity = findActivity(context);
+        if (activity == null || activity.isFinishing()) activity = LaunchActivity.instance;
+        if (activity == null || activity.isFinishing()) activity = findActivity(ApplicationLoader.applicationContext);
+        return activity;
+    }
+
     public static Activity findActivity(Context context) {
         if (context instanceof Activity) {
             return (Activity) context;
@@ -537,7 +549,7 @@ public class AndroidUtilities {
             index = startIndex;
         }
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
-        if (index >= 0) {
+        if (runnable != null && index >= 0) {
             if (type == REPLACING_TAG_TYPE_LINK_NBSP) {
                 spannableStringBuilder.replace(index, index + len, AndroidUtilities.replaceMultipleCharSequence(" ", spannableStringBuilder.subSequence(index, index + len), " "));
             }
@@ -576,6 +588,43 @@ public class AndroidUtilities {
             }
         }
         return spannableStringBuilder;
+    }
+
+    public static SpannableStringBuilder makeClickable(String str, int type, Runnable runnable, Theme.ResourcesProvider resourcesProvider) {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
+        if (type == REPLACING_TAG_TYPE_LINK || type == REPLACING_TAG_TYPE_LINK_NBSP || type == REPLACING_TAG_TYPE_LINKBOLD || type == REPLACING_TAG_TYPE_UNDERLINE) {
+            spannableStringBuilder.setSpan(new ClickableSpan() {
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(type == REPLACING_TAG_TYPE_UNDERLINE);
+                    if (type == REPLACING_TAG_TYPE_LINKBOLD) {
+                        ds.setTypeface(AndroidUtilities.bold());
+                    }
+                }
+                @Override
+                public void onClick(@NonNull View view) {
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                }
+            }, 0, spannableStringBuilder.length(), 0);
+        } else {
+            spannableStringBuilder.setSpan(new CharacterStyle() {
+                @Override
+                public void updateDrawState(TextPaint textPaint) {
+                    textPaint.setTypeface(AndroidUtilities.bold());
+                    int wasAlpha = textPaint.getAlpha();
+                    textPaint.setColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText, resourcesProvider));
+                    textPaint.setAlpha(wasAlpha);
+                }
+            }, 0, spannableStringBuilder.length(), 0);
+        }
+        return spannableStringBuilder;
+    }
+
+    public static SpannableStringBuilder makeClickable(String str, Runnable runnable) {
+        return makeClickable(str, 0, runnable, null);
     }
 
 
@@ -622,21 +671,31 @@ public class AndroidUtilities {
         }
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(str);
         if (index >= 0) {
-            spannableStringBuilder.setSpan(new ClickableSpan() {
-                @Override
-                public void updateDrawState(@NonNull TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(color);
-                }
-
-                @Override
-                public void onClick(@NonNull View view) {
-                    if (onClick != null) {
-                        onClick.run();
+            if (onClick != null) {
+                spannableStringBuilder.setSpan(new ClickableSpan() {
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        ds.setColor(color);
                     }
-                }
-            }, index, index + len, 0);
+
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        if (onClick != null) {
+                            onClick.run();
+                        }
+                    }
+                }, index, index + len, 0);
+            } else {
+                spannableStringBuilder.setSpan(new CharacterStyle() {
+                    @Override
+                    public void updateDrawState(@NonNull TextPaint ds) {
+                        ds.setUnderlineText(false);
+                        ds.setColor(color);
+                    }
+                }, index, index + len, 0);
+            }
         }
         return spannableStringBuilder;
     }
@@ -3122,8 +3181,36 @@ public class AndroidUtilities {
         return new SpannableStringBuilder(str);
     }
 
+    public static SpannableStringBuilder replaceTags(SpannableStringBuilder stringBuilder) {
+        try {
+            int start;
+            int end;
+            ArrayList<Integer> bolds = new ArrayList<>();
+            while ((start = AndroidUtilities.charSequenceIndexOf(stringBuilder, "**")) != -1) {
+                stringBuilder.replace(start, start + 2, "");
+                end = AndroidUtilities.charSequenceIndexOf(stringBuilder, "**");
+                if (end >= 0) {
+                    stringBuilder.replace(end, end + 2, "");
+                    bolds.add(start);
+                    bolds.add(end);
+                }
+            }
+            SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(stringBuilder);
+            for (int a = 0; a < bolds.size() / 2; a++) {
+                spannableStringBuilder.setSpan(new TypefaceSpan(AndroidUtilities.bold()), bolds.get(a * 2), bolds.get(a * 2 + 1), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            return spannableStringBuilder;
+        } catch (Exception e) {
+            FileLog.e(e);
+        }
+        return stringBuilder;
+    }
+
     private static Pattern linksPattern;
     public static SpannableStringBuilder replaceLinks(String str, Theme.ResourcesProvider resourcesProvider) {
+        return replaceLinks(str, resourcesProvider, null);
+    }
+    public static SpannableStringBuilder replaceLinks(String str, Theme.ResourcesProvider resourcesProvider, Runnable onLinkClick) {
         if (linksPattern == null) {
             linksPattern = Pattern.compile("\\[(.+?)\\]\\((.+?)\\)");
         }
@@ -3140,6 +3227,9 @@ public class AndroidUtilities {
             spannable.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
+                    if (onLinkClick != null) {
+                        onLinkClick.run();
+                    }
                     Browser.openUrl(ApplicationLoader.applicationContext, url);
                 }
                 @Override
@@ -4008,6 +4098,18 @@ public class AndroidUtilities {
         if (f == null || !f.exists()) {
             f = FileLoader.getInstance(message.currentAccount).getPathToMessage(message.messageOwner);
         }
+        if (f != null && !f.exists()) {
+            String cacheFilePath = AndroidUtilities.getCacheDir().getAbsolutePath();
+            cacheFilePath += "/" + TelegramUtil.getFileNameWithoutEx(f.getName());
+            List<String> suffix = Arrays.asList(".pt", ".temp");
+            for (int ii = 0; ii < suffix.size(); ii++) {
+                f = new File(cacheFilePath + suffix.get(ii));
+                if (f.exists()) {
+                    message.putInDownloadsStore = true;
+                    break;
+                }
+            }
+        }
         String mimeType = message.type == MessageObject.TYPE_FILE || message.type == MessageObject.TYPE_TEXT ? message.getMimeType() : null;
         return openForView(f, message.getFileName(), mimeType, activity, resourcesProvider, restrict);
     }
@@ -4779,6 +4881,10 @@ public class AndroidUtilities {
         }
 
         return -1;
+    }
+
+    public static float distance(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
     }
 
     public static int lerp(int a, int b, float f) {
@@ -5761,6 +5867,10 @@ public class AndroidUtilities {
     }
 
     public static boolean intersect1d(int x1, int x2, int y1, int y2) {
+        return Math.max(x1, x2) > Math.min(y1, y2) && Math.max(y1, y2) > Math.min(x1, x2);
+    }
+
+    public static boolean intersect1d(float x1, float x2, float y1, float y2) {
         return Math.max(x1, x2) > Math.min(y1, y2) && Math.max(y1, y2) > Math.min(x1, x2);
     }
 

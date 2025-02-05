@@ -165,4 +165,8 @@
     <string name="PanguInfo">Paranoide Textabstände für eine gute Lesbarkeit, um automatisch Leerzeichen zwischen CJK (Chinesisch, Japanisch, Koreanisch), Halbbreite Englisch, Ziffern und Symbolzeichen einzufügen.</string>
     <string name="SendWithPangu">Mit Pangu senden</string>
     <string name="SendWithoutPangu">Ohne Pangu senden</string>
+    <string name="DefaultHlsVideoQuality">Standard Hls Videoqualität</string>
+    <string name="DisableBotOpenButton">Bot Open Button deaktivieren</string>
+    <string name="CustomTitleUserName">Benutze Benutzername als Titel</string>
+    <string name="EnhancedVideoBitrate">Verbesserte gemeinsame Video-Bitrate</string>
 </resources>

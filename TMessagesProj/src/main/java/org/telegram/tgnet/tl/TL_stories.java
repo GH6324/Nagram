@@ -1372,11 +1372,12 @@ public class TL_stories {
     }
 
     public static class TL_stories_searchPosts extends TLObject {
-        public static final int constructor = 0x6cea116a;
+        public static final int constructor = 0xd1810907;
 
         public int flags;
         public String hashtag;
         public MediaArea area;
+        public TLRPC.InputPeer peer;
         public String offset;
         public int limit;
 
@@ -1394,6 +1395,9 @@ public class TL_stories {
             }
             if ((flags & 2) != 0) {
                 area.serializeToStream(stream);
+            }
+            if ((flags & 4) != 0) {
+                peer.serializeToStream(stream);
             }
             stream.writeString(offset);
             stream.writeInt32(limit);
@@ -1468,15 +1472,15 @@ public class TL_stories {
     }
 
     public static class TL_stories_report extends TLObject {
-        public static final int constructor = 0x1923fa8c;
+        public static final int constructor = 0x19d8eb45;
 
         public TLRPC.InputPeer peer;
         public ArrayList<Integer> id = new ArrayList<>();
-        public TLRPC.ReportReason reason;
+        public byte[] option;
         public String message;
 
         public TLObject deserializeResponse(AbstractSerializedData stream, int constructor, boolean exception) {
-            return TLRPC.Bool.TLdeserialize(stream, constructor, exception);
+            return TLRPC.ReportResult.TLdeserialize(stream, constructor, exception);
         }
 
         public void serializeToStream(AbstractSerializedData stream) {
@@ -1488,7 +1492,7 @@ public class TL_stories {
             for (int a = 0; a < count; a++) {
                 stream.writeInt32(id.get(a));
             }
-            reason.serializeToStream(stream);
+            stream.writeByteArray(option);
             stream.writeString(message);
         }
     }

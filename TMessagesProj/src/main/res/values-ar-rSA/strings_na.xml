@@ -165,4 +165,8 @@
     <string name="PanguInfo">تباعد نص بارانويد من أجل القراءة الجيدة، من أجل إدراج فضاء بيضاء تلقائياً بين رمز CJK (الصينية، اليابانية، الكورية)، نصف العرض الإنكليزي والرقم والرموز.</string>
     <string name="SendWithPangu">إرسال مع بانجو</string>
     <string name="SendWithoutPangu">إرسال بدون بانجو</string>
+    <string name="DefaultHlsVideoQuality">جودة الفيديو الافتراضية Hls</string>
+    <string name="DisableBotOpenButton">تعطيل زر فتح البوت</string>
+    <string name="CustomTitleUserName">استخدام الاسم المستعار المستخدم كعنوان</string>
+    <string name="EnhancedVideoBitrate">تحسين معدل بتر الفيديو المشترك</string>
 </resources>

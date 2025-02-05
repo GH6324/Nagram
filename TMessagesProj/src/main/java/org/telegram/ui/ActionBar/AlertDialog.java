@@ -65,6 +65,7 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.AnimatedFloat;
+import org.telegram.ui.Components.AttachableDrawable;
 import org.telegram.ui.Components.EffectsTextView;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.LineProgressView;
@@ -102,6 +103,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
     private boolean[] shadowVisibility = new boolean[2];
     private AnimatorSet[] shadowAnimation = new AnimatorSet[2];
     private int customViewOffset = 12;
+    private boolean withCancelDialog;
 
     private int dialogButtonColorKey = Theme.key_dialogButton;
 
@@ -278,6 +280,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
         super(context, R.style.TransparentDialog);
         this.resourcesProvider = resourcesProvider;
 
+        progressViewStyle = progressStyle;
         backgroundColor = getThemedColor(Theme.key_dialogBackground);
         final boolean isDark = AndroidUtilities.computePerceivedBrightness(backgroundColor) < 0.721f;
         blurredNativeBackground = supportsNativeBlur() && progressViewStyle == ALERT_TYPE_MESSAGE;
@@ -290,8 +293,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
             shadowDrawable.setColorFilter(new PorterDuffColorFilter(backgroundColor, PorterDuff.Mode.MULTIPLY));
             shadowDrawable.getPadding(backgroundPaddings);
         }
-
-        progressViewStyle = progressStyle;
+        withCancelDialog = progressViewStyle == ALERT_TYPE_SPINNER;
     }
 
     private long shownAt;
@@ -313,6 +315,10 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
         shownAt = System.currentTimeMillis();
     }
 
+    public void setCancelDialog(boolean enable) {
+        withCancelDialog = enable;
+    }
+
     public class AlertDialogView extends LinearLayout {
         public AlertDialogView(Context context) {
             super(context);
@@ -322,7 +328,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if (progressViewStyle == ALERT_TYPE_SPINNER) {
+            if (withCancelDialog) {
                 showCancelAlert();
                 return false;
             }
@@ -331,7 +337,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
 
         @Override
         public boolean onInterceptTouchEvent(MotionEvent ev) {
-            if (progressViewStyle == ALERT_TYPE_SPINNER) {
+            if (withCancelDialog) {
                 showCancelAlert();
                 return false;
             }
@@ -630,6 +636,20 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
             topImageView = new RLottieImageView(getContext());
             if (topDrawable != null) {
                 topImageView.setImageDrawable(topDrawable);
+                if (topDrawable instanceof AttachableDrawable) {
+                    final AttachableDrawable d = (AttachableDrawable) topDrawable;
+                    topImageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(@NonNull View v) {
+                            d.onAttachedToWindow(null);
+                        }
+                        @Override
+                        public void onViewDetachedFromWindow(@NonNull View v) {
+                            d.onDetachedFromWindow(null);
+                        }
+                    });
+                    d.setParent(topImageView);
+                }
             } else if (topResId != 0) {
                 topImageView.setImageResource(topResId);
             } else {
@@ -1220,7 +1240,7 @@ public class AlertDialog extends Dialog implements Drawable.Callback, Notificati
         }
     }
 
-    private void showCancelAlert() {
+    public void showCancelAlert() {
         if (!canCacnel || cancelDialog != null) {
             return;
         }

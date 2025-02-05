@@ -96,7 +96,7 @@ public class EditTextCaption extends EditTextBoldCursor {
     public interface EditTextCaptionDelegate {
         void onSpansChanged();
 
-        long getCurrentChat();
+        default long getCurrentChat() { return 0; };
     }
 
     public EditTextCaption(Context context, Theme.ResourcesProvider resourcesProvider) {
@@ -148,6 +148,10 @@ public class EditTextCaption extends EditTextBoldCursor {
 
     public void setAllowTextEntitiesIntersection(boolean value) {
         allowTextEntitiesIntersection = value;
+    }
+
+    public boolean getAllowTextEntitiesIntersection() {
+        return allowTextEntitiesIntersection;
     }
 
     public void makeSelectedBold() {
